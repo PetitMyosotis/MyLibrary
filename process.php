@@ -4,15 +4,25 @@ session_start();
 
 $mysqli = new mysqli('localhost', 'root','','books') or die(mysqli_error($mysqli));
 $mysqli->set_charset("utf8mb4");
+$id_book = 0;
 $title ="";
 $author="";
+$numberOfPage=0;
+$category="";
+$startReading= date ("Y-m-d");
+$endReading= date ("Y-m-d");
 $update = false ;
-$id_book = 0;
+
 
 if (isset($_POST['save'])){
     $title = $_POST['title'];
     $author = $_POST['author'];
-    $mysqli->query("INSERT INTO books (title) VALUE('$title')") or die($mysqli->error);
+    $numberOfPage = $_POST['numberOfPage'];
+    $category = $_POST['category'];
+    $startReading = $_POST['startReading'];
+    $endReading = $_POST['endReading'];
+    $mysqli->query("INSERT INTO books (title,author,numberOfPage,category,startReading,endReading) VALUE('$title','$author',
+        '$numberOfPage','$category','$startReading','$endReading')") or die($mysqli->error);
 
     $_SESSION['message'] ="Record has been saved!";
     $_SESSION['msg_type'] ="success";

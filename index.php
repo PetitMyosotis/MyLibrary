@@ -64,6 +64,10 @@ require_once('process.php');
                     <th>book id</th>
                     <th>title</th>
                     <th>author</th>
+                    <th>number of page</th>
+                    <th>category</th>
+                    <th>start reading</th>
+                    <th>end reading</th>
                     <th colspan="2">Action</th>
                 </tr>
             </tread>
@@ -75,6 +79,10 @@ require_once('process.php');
                 <td><?php echo $row['id_book']; ?></td>
                 <td><?php echo $row['title']; ?></td>
                 <td><?php echo $row['author']; ?></td>
+                <td><?php echo $row['numberOfPage']; ?></td>
+                <td><?php echo $row['category']; ?></td>
+                <td><?php echo $row['startReading']; ?></td>
+                <td><?php echo $row['endReading']; ?></td>
                 <td>
                     <a href="index.php?edit=<?php echo $row['id_book']; ?>" class="btn btn-info">Edit</a>
                     <a href="process.php?delete=<?php echo $row ['id_book']; ?>" class="btn btn-danger">Delete</a>
@@ -103,6 +111,22 @@ require_once('process.php');
             <div class="form-group">
                 <label>Author</label>
                 <input type="text" name="author" class="form-control" value="<?php echo $author;?>" placeholder="Enter the author">
+            </div>
+            <div class="form-group">
+                <label>number of page</label>
+                <input type="number" name="numberOfPage" class="form-control" value="<?php echo $numberOfPage;?>" placeholder="Enter the number of page">
+            </div>
+            <div class="form-group">
+                <label>category</label>
+                <input type="text" name="category" class="form-control" value="<?php echo $category;?>" placeholder="Enter the category">
+            </div>
+            <div class="form-group">
+                <label>Start reading</label>
+                <input type="date" name="startReading" class="form-control" value="<?php echo $startReading;?>" >
+            </div>
+            <div class="form-group">
+                <label>End reading</label>
+                <input type="date" name="endReading" class="form-control" value="<?php echo $endReading;?>" >
             </div>
             <div class="form-group">
                 <?php if($update == true):
