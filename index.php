@@ -1,144 +1,112 @@
 <?php
-require_once('connexion.php');
+require_once('connexionBooks.php');
 require_once('process.php');
 ?>
 
 <!DOCTYPE html>
 <html>
-
 <head>
-    <title>My Library</title>
-    <meta charset="utf-8" />
+<title>My library v1</title>
+<meta charset="utf-8" />
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" crossorigin="anonymous">
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-ka7Sk0Gln4gmtz2MlQnikT1wXgYsOg+OMhuP+IlRH9sENBO0LRn5q+8nbTov4+1p" crossorigin="anonymous"></script>
 </head>
 
 <body>
-<!-- alerte -->
-    <?php 
-    if (isset($_SESSION['message'])):
-    ?>
-
-    <div class="alert alert-<?=$_SESSION['msg_type']?>">
-
-        <?php 
-        echo $_SESSION['message'];
-        unset($_SESSION['message']);
-        ?>
-    </div>
-    <?php endif ?>
-<!-- head -->
-<div class="container">
-    <h1 id="title">My Library</h1>
-    <div>
-        <?php
-        echo "Nous sommes le " . $date = date('d/m/Y');
-        ?>
-    </div>
-<!--  lu ce mois-ci -->
-    <div>Ce mois-ci j'ai lu:</div>
-    <div>
-        <?php
-            $date_explosee = explode("/", $date);
-            $mois = $date_explosee[1];
-            $requete= "SELECT title FROM books WHERE MONTH(endReading) = $mois";
-            $resultat=mysqli_query($mysqli,$requete);
-            while($ligne=mysqli_fetch_assoc($resultat))
-            {
-        ?>
-        <div>
-            <?php echo $ligne["title"]; ?>
-        </div>
-        <?php } ?>
-    </div>
-
-
-<!-- SHOW -->
-    <?php
-    $result = $mysqli->query("SELECT * FROM books") or die($mysqli->error);
-    ?>
-    <div class="row justify-content-center">
-        <table class="table">
-            <tread>
-                <tr>
-                    <th>book id</th>
-                    <th>title</th>
-                    <th>author</th>
-                    <th>number of page</th>
-                    <th>category</th>
-                    <th>start reading</th>
-                    <th>end reading</th>
-                    <th colspan="2">Action</th>
-                </tr>
-            </tread>
-
-            <?php
-                while($row = $result->fetch_assoc()):
-            ?>
-            <tr>
-                <td><?php echo $row['id_book']; ?></td>
-                <td><?php echo $row['title']; ?></td>
-                <td><?php echo $row['author']; ?></td>
-                <td><?php echo $row['numberOfPage']; ?></td>
-                <td><?php echo $row['category']; ?></td>
-                <td><?php echo $row['startReading']; ?></td>
-                <td><?php echo $row['endReading']; ?></td>
-                <td>
-                    <a href="index.php?edit=<?php echo $row['id_book']; ?>" class="btn btn-info">Edit</a>
-                    <a href="process.php?delete=<?php echo $row ['id_book']; ?>" class="btn btn-danger">Delete</a>
-                </td>
-            </tr>
-            <?php endwhile; ?>
-        </table>
-    </div>
-    <?php
-    function pre_r($array) {
-        echo '<pre>';
-        print_r($array);
-        echo '</pre>';
-    }
-    ?>
-
-
-<!-- INSERT -->
-    <div class="row justify-content-center">
-        <form action ="process.php" method="POST">
-            <input type="hidden" name="id_book" value="<?php echo $id_book; ?>">
-            <div class="form-group">
-                <label>Title</label>
-                <input type="text" name="title" class="form-control" value="<?php echo $title;?>" placeholder="Enter the title">
-            </div>
-            <div class="form-group">
-                <label>Author</label>
-                <input type="text" name="author" class="form-control" value="<?php echo $author;?>" placeholder="Enter the author">
-            </div>
-            <div class="form-group">
-                <label>number of page</label>
-                <input type="number" name="numberOfPage" class="form-control" value="<?php echo $numberOfPage;?>" placeholder="Enter the number of page">
-            </div>
-            <div class="form-group">
-                <label>category</label>
-                <input type="text" name="category" class="form-control" value="<?php echo $category;?>" placeholder="Enter the category">
-            </div>
-            <div class="form-group">
-                <label>Start reading</label>
-                <input type="date" name="startReading" class="form-control" value="<?php echo $startReading;?>" >
-            </div>
-            <div class="form-group">
-                <label>End reading</label>
-                <input type="date" name="endReading" class="form-control" value="<?php echo $endReading;?>" >
-            </div>
-            <div class="form-group">
-                <?php if($update == true):
-                ?>
-                <button class="btn btn-info" type="submit" name="update">Update</button>
-                <?php else: ?>
-                <button class="btn btn-primary" type="submit" name="save">Save</button>
-                <?php endif; ?>
-            </div>
+<!-- NAVBAR -->
+<nav class="navbar navbar-light bg-light">
+  <div class="container-fluid">
+    <a class="navbar-brand" href="#">My Library</a>
+    <button class="navbar-toggler" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasNavbar" aria-controls="offcanvasNavbar">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="offcanvas offcanvas-end" tabindex="-1" id="offcanvasNavbar" aria-labelledby="offcanvasNavbarLabel">
+      <div class="offcanvas-header">
+        <button type="button" class="btn-close text-reset" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+      </div>
+      <div class="offcanvas-body">
+        <ul class="navbar-nav justify-content-end flex-grow-1 pe-3">
+          <li class="nav-item">
+            <a class="nav-link active" aria-current="page" href="#">Accueil</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="#">Ajouter un nouveau livre</a>
+          </li>
+        </ul>
+        <form class="d-flex">
+          <input class="form-control me-2" type="search" placeholder="Recherche" aria-label="Recherche">
+          <button class="btn btn-info" type="submit">Search</button>
         </form>
+      </div>
+    </div>
+  </div>
+</nav>
+<!-- End Navbar -->
+<!-- Page -->
+<div class="container" id="container_page">
+    <!-- first line -->
+    <div class="container" id="container1">
+        <div class="row">
+            <!-- 2022 -->
+            <div class="col">
+                <h2 id="title_2022">2022</h2>
+                    <div>
+                        <?php
+                        $date_explosee = explode("/", $date);
+                        $year = $date_explosee[2];
+                        $requete= "SELECT title FROM books WHERE YEAR(endReading) = $year";
+                        $resultat=mysqli_query($mysqli,$requete);
+                        while($ligne=mysqli_fetch_assoc($resultat))
+                        {
+                        ?>
+                            <div>
+                            <?php echo $ligne["title"]; ?>
+                            </div>
+                        <?php } ?>
+                    </div>
+            </div>
+            <!-- Lecture en cours -->
+            <div class="col">
+                <h2 id="title_inProgress">Lecture en cours</h2>
+                    <div>
+                        <?php
+                        $requete= "SELECT title FROM books WHERE endReading IS NULL";
+                        $resultat=mysqli_query($mysqli,$requete);
+                        while($ligne=mysqli_fetch_assoc($resultat))
+                        {
+                        ?>
+                            <div>
+                            <?php echo $ligne["title"]; ?>
+                            </div>
+                        <?php } ?>
+                    </div>
+            </div>        
+            <!-- BTN -->
+            <div class="col btn-group-vertical">
+                <button class="btn btn-info" name="edit_book">Modifier ma lecture</button>
+                <button class="btn btn-info" name="new_book">Nouvelle lecture</button>
+            </div>
+        </div>
+    </div>
+    <!-- End first line -->
+    <!-- Second line -->
+    <div class="container" id="container2">
+        <h2 id="title_month">Ce mois-ci</h2>
+            <div>
+                <?php
+                $mois = $date_explosee[1];
+                $requete= "SELECT title FROM books WHERE MONTH(endReading) = $mois";
+                $resultat=mysqli_query($mysqli,$requete);
+                while($ligne=mysqli_fetch_assoc($resultat))
+                {
+                ?>
+                    <div>
+                    <?php echo $ligne["title"]; ?>
+                    </div>
+                <?php } ?>
+            </div>   
     </div>
 </div>
 </body>
 
-</html>
+</html> 
