@@ -47,7 +47,7 @@ if (isset($_GET['delete'])){
 if (isset($_GET['edit'])){
     $id_book = $_GET['edit'];
     $update =true ;
-    $result = $mysqli->query("SELECT * FROM books WHERE id_book=$id_book") or die($mysqli->error);
+    $result = $mysqli->query("SELECT title FROM books WHERE endReading IS NULL") or die($mysqli->error);
     $row = $result->fetch_assoc();
     $title = $row['title'];
     $numberOfPage = $row['numberOfPage'];
